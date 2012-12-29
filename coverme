@@ -27,7 +27,7 @@ for DIR in $(find "$BASE_DIR" -type d | sort); do
         COVER=$(ls "$DIR"/cover.*)
 
         for FILE in "$DIR"/*.mp3; do
-            echo -n "    ${FILE#./}" 
+            echo -n "    $(basename $FILE)" 
 
             # Don't overwrite.
             if (( $(eyeD3 "$FILE" | grep -c "FRONT_COVER" ) > 0 )); then
