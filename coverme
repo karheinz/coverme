@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set +x
+
+if [[ $# != 1 || ! -d $1 ]]; then
+    echo "usage: $0 <dir>"
+    exit 1
+fi
+
+BASE_DIR=${1%/}
+
+for DIR in $(find "$BASE_DIR" -type d | sort); do
+    # Ignore DIRs without mp3 files.
+    if (( $(find $DIR -maxdepth 1 -iname "*.mp3" -type f | wc -l) == 0 )); then
+        continue;
+    fi
+
+    echo -n "$DIR"
+
+    # Fetch covers.
+    covergrabber "$DIR" &> /dev/null
+
+    # If there is a cover, apply!
+    # Use single brackets for glob expansion.
+    if [ -f "$DIR"/cover.* ]; then
+        echo ""
+
+        COVER=$(ls "$DIR"/cover.*)
+
+        for FILE in "$DIR"/*.mp3; do
+            echo -n "    ${FILE#./}" 
+
+            # Don't overwrite.
+            if (( $(eyeD3 "$FILE" | grep -c "FRONT_COVER" ) > 0 )); then
+                echo " [OK]"
+                continue
+            fi
+            eyeD3 --add-image="$COVER":FRONT_COVER "$FILE" &> /dev/null
+            if (( $? == 0 )); then
+                echo " [OK]"
+            else
+                echo " [ERROR]"
+            fi
+        done
+    else
+        echo " [NO COVER FOUND]"
+    fi
+done
