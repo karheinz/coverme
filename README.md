@@ -6,5 +6,6 @@ What coverme does:
 * tags each mp3 file in a directory with the corresponding front cover [[2]](#eyeD3).
 
 References:
+
 1. <span id="cg" />cover\_grabber: [https://github.com/thedonvaughn/cover_grabber](https://github.com/thedonvaughn/cover_grabber)
 2. <span id="eyeD3" />eyeD3: [http://eyed3.nicfit.net/](http://eyed3.nicfit.net/)
